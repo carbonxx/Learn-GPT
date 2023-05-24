@@ -1,9 +1,10 @@
-import openai, re, logging
+import openai
+import re
 from gradio.components import Textbox, HTML
 from gradio import Interface
 
 # Set up OpenAI API credentials
-openai.api_key = "OPEN_API_KEY"
+openai.api_key = "YOUR_API_KEY"
 
 questions = [
     [
@@ -53,21 +54,20 @@ def chatbot_interface(language):
             responses = ""
             i = -1
             for question in questions:
-                i+=1
+                i += 1
                 if type(question) == list:
-                    responses += f'<p style="font-size: 20px; font-weight: bold;">{infoQuestions[i].format(question)}</p><br>'
+                    responses += f'<p style="font-size: 20px; font-weight: bold;">{infoQuestions[i].format(language)}</p><br>'
                     for q in question:
                         res = re.sub(r"\n", "<br>", generate_response(q.format(language)))
                         responses += f'{res}<br><br>'
-                    yield responses
                 else:
                     res = re.sub(r"\n", "<br>", generate_response(question.format(language)))
                     responses += f'<p style="font-size: 20px; font-weight: bold;">{infoQuestions[i].format(question)}</p><br>{res}<br><br>'
-                    yield responses
+            return responses
         else:
             rs = re.sub(r"\n", "<br>", generate_response(f"What is {language}?"))
-            responses += f'The provided input is not a programming language.<br><p style="font-size: 20px; font-weight: bold;">What is {language}</p><br>{rs}'
-        return responses
+            responses = f'The provided input is not a programming language.<br><p style="font-size: 20px; font-weight: bold;">What is {language}</p><br>{rs}'
+            return responses
     else:
         return "Please enter the name of a programming language."
 
